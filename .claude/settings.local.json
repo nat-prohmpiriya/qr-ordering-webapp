@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(test:*)",
+      "Bash(if [ -d \"app\" ])",
+      "Bash(then echo \"=== app directory exists ===\")",
+      "Bash(else echo \"No app directory\")",
+      "Bash(fi)",
+      "Bash(if [ -f \"tailwind.config.js\" ])",
+      "Bash([ -f \"tailwind.config.ts\" ])",
+      "Bash(then echo \"Tailwind config exists\")",
+      "Bash(else echo \"No Tailwind config\")",
+      "Bash(if [ -f \".env.local\" ])",
+      "Bash([ -f \".env\" ])",
+      "Bash(then echo \"=== Environment files ===\")",
+      "Bash(else echo \"No .env files\")",
+      "Bash(npm install:*)",
+      "Bash(tree:*)",
+      "Bash(npm run build:*)",
+      "Bash(cat:*)",
+      "Bash(docker:*)",
+      "Bash(mongo:7)",
+      "Bash(timeout 15 npm run dev:*)",
+      "Bash(node test-env.js:*)",
+      "Bash(npm run dev:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(xattr:*)",
+      "Bash(export MONGODB_URI=\"mongodb://admin:admin123@localhost:27017/qr-ordering?authSource=admin\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
