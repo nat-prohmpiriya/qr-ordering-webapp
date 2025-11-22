@@ -3,17 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3600",
+    "dev": "node server.js",
+    "dev:next": "next dev -p 3600",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "lint": "eslint",
     "seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
+    "@ant-design/cssinjs": "^1.24.0",
     "@ant-design/nextjs-registry": "^1.2.0",
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "antd": "^6.0.0",
     "bcryptjs": "^3.0.3",
+    "dayjs": "^1.11.19",
     "mongoose": "^9.0.0",
     "nanoid": "^5.1.6",
     "next": "16.0.3",

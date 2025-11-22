@@ -28,7 +28,9 @@
       "Bash(curl:*)",
       "Bash(python3:*)",
       "Bash(xattr:*)",
-      "Bash(export MONGODB_URI=\"mongodb://admin:admin123@localhost:27017/qr-ordering?authSource=admin\")"
+      "Bash(export MONGODB_URI=\"mongodb://admin:admin123@localhost:27017/qr-ordering?authSource=admin\")",
+      "Bash(npm run seed:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

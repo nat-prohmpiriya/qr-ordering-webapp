@@ -87,6 +87,19 @@ export async function PATCH(
     order.status = status;
     await order.save();
 
+    // Emit Socket.io event for status update
+    try {
+      if (global.io) {
+        global.io.to(`order:${id}`).emit('order-status-update', {
+          orderId: id,
+          status,
+          order
+        });
+      }
+    } catch (socketError) {
+      console.error('Socket.io emit error:', socketError);
+    }
+
     const response: ApiResponse = {
       success: true,
       data: order,

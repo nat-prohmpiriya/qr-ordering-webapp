@@ -110,6 +110,15 @@ export async function POST(request: Request) {
       .populate('tableId', 'tableNumber zone')
       .lean();
 
+    // Emit Socket.io event for new order
+    try {
+      if (global.io) {
+        global.io.to(`branch:${table.branchId.toString()}`).emit('new-order', populatedOrder);
+      }
+    } catch (socketError) {
+      console.error('Socket.io emit error:', socketError);
+    }
+
     const response: ApiResponse = {
       success: true,
       data: populatedOrder,
