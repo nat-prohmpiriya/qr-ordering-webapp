@@ -6,7 +6,6 @@ import {
   Layout,
   Card,
   Typography,
-  List,
   Button,
   Form,
   Input,
@@ -155,29 +154,34 @@ export default function CheckoutPage() {
         <Card style={{ marginBottom: 16 }}>
           <Title level={3}>{t('confirm-order')}</Title>
 
-          <List
-            dataSource={items}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  title={item.name[language]}
-                  description={
-                    <>
-                      <div>
-                        ฿{item.price} x {item.quantity} = ฿
-                        {(item.price * item.quantity).toFixed(2)}
-                      </div>
-                      {item.specialInstructions && (
-                        <Text type="secondary" style={{ fontSize: 12 }}>
-                          {t('note')}: {item.specialInstructions}
-                        </Text>
-                      )}
-                    </>
-                  }
-                />
-              </List.Item>
-            )}
-          />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {items.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  paddingBottom: index !== items.length - 1 ? 16 : 0,
+                  borderBottom: index !== items.length - 1 ? '1px solid #f0f0f0' : 'none',
+                }}
+              >
+                <div style={{ marginBottom: 4 }}>
+                  <Text strong style={{ fontSize: 14 }}>
+                    {item.name[language]}
+                  </Text>
+                </div>
+                <div style={{ marginBottom: 4 }}>
+                  <Text>
+                    ฿{item.price} x {item.quantity} = ฿
+                    {(item.price * item.quantity).toFixed(2)}
+                  </Text>
+                </div>
+                {item.specialInstructions && (
+                  <Text type="secondary" style={{ fontSize: 12 }}>
+                    {t('note')}: {item.specialInstructions}
+                  </Text>
+                )}
+              </div>
+            ))}
+          </div>
 
           <Divider />
 
