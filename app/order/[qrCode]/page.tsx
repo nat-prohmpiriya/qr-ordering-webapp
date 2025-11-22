@@ -26,8 +26,10 @@ import {
   PlusOutlined,
   MinusOutlined,
   DeleteOutlined,
+  GlobalOutlined,
 } from '@ant-design/icons';
 import { useCart } from '@/contexts/CartContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const { Header, Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -67,6 +69,7 @@ export default function OrderPage() {
   const params = useParams();
   const router = useRouter();
   const { items, addItem, removeItem, updateQuantity, total, itemCount } = useCart();
+  const { language, setLanguage, t } = useLanguage();
 
   const [qrCode, setQrCode] = useState<string>('');
   const [tableInfo, setTableInfo] = useState<TableInfo | null>(null);
@@ -169,14 +172,14 @@ export default function OrderPage() {
         quantity: itemQuantity,
         specialInstructions: specialInstructions || undefined,
       });
-      message.success(`เพิ่ม ${selectedItem.name.th} ลงตะกร้าแล้ว`);
+      message.success(`${t('added-to-cart')}: ${selectedItem.name[language]}`);
       setItemModalVisible(false);
     }
   };
 
   const handleCheckout = () => {
     if (items.length === 0) {
-      message.warning('กรุณาเลือกเมนูก่อนสั่งอาหาร');
+      message.warning(t('select-menu-first'));
       return;
     }
     router.push(`/order/${qrCode}/checkout`);
@@ -188,7 +191,7 @@ export default function OrderPage() {
 
   const tabItems = categories.map((cat) => ({
     key: cat._id,
-    label: cat.name.th,
+    label: cat.name[language],
   }));
 
   if (loading) {
@@ -219,19 +222,29 @@ export default function OrderPage() {
             {tableInfo?.branch.name}
           </Title>
           <Text type="secondary" style={{ fontSize: 13 }}>
-            โต๊ะ {tableInfo?.tableNumber}{tableInfo?.zone ? ` (${tableInfo.zone})` : ''}
+            {t('table')} {tableInfo?.tableNumber}{tableInfo?.zone ? ` (${tableInfo.zone})` : ''}
           </Text>
         </div>
-        <Badge count={itemCount} showZero>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <Button
-            type="primary"
-            icon={<ShoppingCartOutlined />}
-            onClick={() => setCartDrawerVisible(true)}
-            size="large"
+            type="text"
+            icon={<GlobalOutlined />}
+            onClick={() => setLanguage(language === 'th' ? 'en' : 'th')}
+            style={{ padding: '4px 8px' }}
           >
-            ตะกร้า
+            {language === 'th' ? 'EN' : 'TH'}
           </Button>
-        </Badge>
+          <Badge count={itemCount} showZero>
+            <Button
+              type="primary"
+              icon={<ShoppingCartOutlined />}
+              onClick={() => setCartDrawerVisible(true)}
+              size="large"
+            >
+              {t('cart')}
+            </Button>
+          </Badge>
+        </div>
       </Header>
 
       <Content style={{ padding: '16px' }}>
@@ -251,7 +264,7 @@ export default function OrderPage() {
                 cover={
                   item.imageUrl ? (
                     <img
-                      alt={item.name.th}
+                      alt={item.name[language]}
                       src={item.imageUrl}
                       style={{ height: 200, objectFit: 'cover' }}
                     />
@@ -265,7 +278,7 @@ export default function OrderPage() {
                         justifyContent: 'center',
                       }}
                     >
-                      <Text type="secondary">ไม่มีรูปภาพ</Text>
+                      <Text type="secondary">{t('no-image')}</Text>
                     </div>
                   )
                 }
@@ -273,18 +286,18 @@ export default function OrderPage() {
                 <Card.Meta
                   title={
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span>{item.name.th}</span>
+                      <span>{item.name[language]}</span>
                       {item.isVegetarian && <span>🌱</span>}
                     </div>
                   }
                   description={
                     <>
-                      {item.description?.th && (
+                      {item.description?.[language] && (
                         <Paragraph
                           ellipsis={{ rows: 2 }}
                           style={{ marginBottom: 8, fontSize: 13 }}
                         >
-                          {item.description.th}
+                          {item.description[language]}
                         </Paragraph>
                       )}
                       {item.spicyLevel > 0 && (
@@ -304,7 +317,7 @@ export default function OrderPage() {
 
           {filteredMenuItems.length === 0 && (
             <Col span={24}>
-              <Empty description="ไม่มีเมนูในหมวดนี้" />
+              <Empty description={t('no-menu')} />
             </Col>
           )}
         </Row>
@@ -312,7 +325,7 @@ export default function OrderPage() {
 
       {/* Item Detail Modal */}
       <Modal
-        title={selectedItem?.name.th}
+        title={selectedItem?.name[language]}
         open={itemModalVisible}
         onCancel={() => setItemModalVisible(false)}
         footer={null}
@@ -322,28 +335,28 @@ export default function OrderPage() {
             {selectedItem.imageUrl && (
               <img
                 src={selectedItem.imageUrl}
-                alt={selectedItem.name.th}
+                alt={selectedItem.name[language]}
                 style={{ width: '100%', borderRadius: 8, marginBottom: 16 }}
               />
             )}
 
-            <Paragraph>{selectedItem.description?.th}</Paragraph>
+            <Paragraph>{selectedItem.description?.[language]}</Paragraph>
 
             <div style={{ marginBottom: 16 }}>
-              <Text strong>ราคา: </Text>
+              <Text strong>{t('price')}: </Text>
               <Text style={{ fontSize: 18, color: '#ff4d4f' }}>฿{selectedItem.price}</Text>
             </div>
 
             {selectedItem.spicyLevel > 0 && (
               <div style={{ marginBottom: 8 }}>
-                <Text strong>ความเผ็ด: </Text>
+                <Text strong>{t('spicy')}: </Text>
                 {'🌶️'.repeat(selectedItem.spicyLevel)}
               </div>
             )}
 
             {selectedItem.allergens.length > 0 && (
               <div style={{ marginBottom: 8 }}>
-                <Text strong>สารก่อภูมิแพ้: </Text>
+                <Text strong>{t('allergens')}: </Text>
                 {selectedItem.allergens.map((allergen) => (
                   <Tag key={allergen} color="orange">
                     {allergen}
@@ -354,16 +367,16 @@ export default function OrderPage() {
 
             {selectedItem.isVegetarian && (
               <Tag color="green" style={{ marginBottom: 8 }}>
-                🌱 เมนูเจ/มังสวิรัติ
+                🌱 {t('vegetarian')}
               </Tag>
             )}
 
             <div style={{ marginBottom: 16 }}>
-              <Text type="secondary">เวลาเตรียม: ~{selectedItem.preparationTime} นาที</Text>
+              <Text type="secondary">{t('prep-time')}: ~{selectedItem.preparationTime} {t('minutes')}</Text>
             </div>
 
             <div style={{ marginBottom: 16 }}>
-              <Text strong>จำนวน:</Text>
+              <Text strong>{t('quantity')}:</Text>
               <div style={{ display: 'flex', alignItems: 'center', marginTop: 8, gap: 8 }}>
                 <Button
                   icon={<MinusOutlined />}
@@ -384,10 +397,10 @@ export default function OrderPage() {
             </div>
 
             <div style={{ marginBottom: 16 }}>
-              <Text strong>คำขอพิเศษ:</Text>
+              <Text strong>{t('special-instructions')}:</Text>
               <TextArea
                 rows={3}
-                placeholder="เช่น ไม่ใส่ผัก, เผ็ดน้อย, ฯลฯ"
+                placeholder={t('special-instructions-placeholder')}
                 value={specialInstructions}
                 onChange={(e) => setSpecialInstructions(e.target.value)}
                 style={{ marginTop: 8 }}
@@ -401,7 +414,7 @@ export default function OrderPage() {
               icon={<PlusOutlined />}
               onClick={handleAddToCart}
             >
-              เพิ่มลงตะกร้า - ฿{(selectedItem.price * itemQuantity).toFixed(2)}
+              {t('add-to-cart')} - ฿{(selectedItem.price * itemQuantity).toFixed(2)}
             </Button>
           </div>
         )}
@@ -409,7 +422,7 @@ export default function OrderPage() {
 
       {/* Cart Drawer */}
       <Drawer
-        title="ตะกร้าสินค้า"
+        title={t('cart-title')}
         placement="right"
         onClose={() => setCartDrawerVisible(false)}
         open={cartDrawerVisible}
@@ -418,7 +431,7 @@ export default function OrderPage() {
         footer={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text strong style={{ fontSize: 18 }}>รวม:</Text>
+              <Text strong style={{ fontSize: 18 }}>{t('total')}:</Text>
               <Text strong style={{ fontSize: 20, color: '#ff4d4f' }}>
                 ฿{total.toFixed(2)}
               </Text>
@@ -430,13 +443,13 @@ export default function OrderPage() {
               onClick={handleCheckout}
               disabled={items.length === 0}
             >
-              ยืนยันและสั่งอาหาร
+              {t('checkout')}
             </Button>
           </div>
         }
       >
         {items.length === 0 ? (
-          <Empty description="ตะกร้าว่างเปล่า" />
+          <Empty description={t('cart-empty')} />
         ) : (
           <List
             dataSource={items}
@@ -444,6 +457,7 @@ export default function OrderPage() {
               <List.Item
                 actions={[
                   <Button
+                    key="delete"
                     type="text"
                     danger
                     icon={<DeleteOutlined />}
@@ -452,13 +466,13 @@ export default function OrderPage() {
                 ]}
               >
                 <List.Item.Meta
-                  title={item.name.th}
+                  title={item.name[language]}
                   description={
                     <>
                       <div>฿{item.price} x {item.quantity}</div>
                       {item.specialInstructions && (
                         <Text type="secondary" style={{ fontSize: 12 }}>
-                          หมายเหตุ: {item.specialInstructions}
+                          {t('note')}: {item.specialInstructions}
                         </Text>
                       )}
                     </>

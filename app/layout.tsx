@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import SessionProvider from "@/components/SessionProvider";
 import { CartProvider } from "@/contexts/CartContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import "@ant-design/v5-patch-for-react-19";
 import "./globals.css";
 
@@ -32,9 +33,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProvider>
-          <CartProvider>
-            <AntdRegistry>{children}</AntdRegistry>
-          </CartProvider>
+          <LanguageProvider>
+            <CartProvider>
+              <AntdRegistry>{children}</AntdRegistry>
+            </CartProvider>
+          </LanguageProvider>
         </SessionProvider>
       </body>
     </html>
