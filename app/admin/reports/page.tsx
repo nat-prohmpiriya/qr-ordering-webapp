@@ -207,7 +207,7 @@ export default function ReportsPage() {
                   title="Total Orders"
                   value={reportData.summary.totalOrders}
                   prefix={<ShoppingCartOutlined />}
-                  valueStyle={{ color: '#3f8600' }}
+                  styles={{ value: { color: '#3f8600' } }}
                 />
               </Card>
             </Col>
@@ -218,7 +218,7 @@ export default function ReportsPage() {
                   value={reportData.summary.totalRevenue.toFixed(2)}
                   prefix={<DollarOutlined />}
                   suffix="THB"
-                  valueStyle={{ color: '#cf1322' }}
+                  styles={{ value: { color: '#cf1322' } }}
                 />
               </Card>
             </Col>
@@ -229,7 +229,7 @@ export default function ReportsPage() {
                   value={reportData.summary.averageOrderValue.toFixed(2)}
                   prefix={<RiseOutlined />}
                   suffix="THB"
-                  valueStyle={{ color: '#1890ff' }}
+                  styles={{ value: { color: '#1890ff' } }}
                 />
               </Card>
             </Col>
@@ -298,7 +298,7 @@ export default function ReportsPage() {
                   columns={topItemsColumns}
                   dataSource={reportData.topItems}
                   pagination={false}
-                  rowKey={(record, index) => `${record.name.en}-${index}`}
+                  rowKey={(record) => `${record.name.en}-${record.quantity}`}
                   size="small"
                 />
               </Card>

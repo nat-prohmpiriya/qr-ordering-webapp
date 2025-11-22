@@ -24,7 +24,9 @@ import {
   SmileOutlined,
   CloseCircleOutlined,
   ReloadOutlined,
+  GlobalOutlined,
 } from '@ant-design/icons';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const { Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -53,6 +55,7 @@ interface Order {
 export default function OrderTrackingPage() {
   const params = useParams();
   const router = useRouter();
+  const { language, setLanguage, t } = useLanguage();
 
   const [orderId, setOrderId] = useState<string>('');
   const [order, setOrder] = useState<Order | null>(null);
@@ -84,10 +87,10 @@ export default function OrderTrackingPage() {
         setNotFound(false);
       } else {
         setNotFound(true);
-        message.error('ไม่พบคำสั่งซื้อ');
+        message.error(t('order-not-found'));
       }
     } catch (error) {
-      message.error('ไม่สามารถโหลดข้อมูลคำสั่งซื้อได้');
+      message.error(t('order-error'));
       console.error('Error:', error);
     } finally {
       setLoading(false);
@@ -130,29 +133,29 @@ export default function OrderTrackingPage() {
 
   const statusSteps = [
     {
-      title: 'รอยืนยัน',
+      title: t('step-pending-title'),
       icon: <ClockCircleOutlined />,
-      description: 'รอพนักงานยืนยันคำสั่งซื้อ',
+      description: t('step-pending-desc'),
     },
     {
-      title: 'ยืนยันแล้ว',
+      title: t('step-confirmed-title'),
       icon: <CheckCircleOutlined />,
-      description: 'พนักงานยืนยันคำสั่งซื้อแล้ว',
+      description: t('step-confirmed-desc'),
     },
     {
-      title: 'กำลังเตรียม',
+      title: t('step-preparing-title'),
       icon: <FireOutlined />,
-      description: 'กำลังเตรียมอาหารของคุณ',
+      description: t('step-preparing-desc'),
     },
     {
-      title: 'พร้อมเสิร์ฟ',
+      title: t('step-ready-title'),
       icon: <RocketOutlined />,
-      description: 'อาหารพร้อมเสิร์ฟแล้ว',
+      description: t('step-ready-desc'),
     },
     {
-      title: 'เสิร์ฟแล้ว',
+      title: t('step-served-title'),
       icon: <SmileOutlined />,
-      description: 'ขอให้รับประทานอาหารอร่อย',
+      description: t('step-served-desc'),
     },
   ];
 
@@ -170,11 +173,11 @@ export default function OrderTrackingPage() {
         <Content style={{ padding: '24px', maxWidth: 600, margin: '0 auto' }}>
           <Result
             status="404"
-            title="ไม่พบคำสั่งซื้อ"
-            subTitle="ขอโทษครับ ไม่พบคำสั่งซื้อที่คุณค้นหา"
+            title={t('order-not-found')}
+            subTitle={t('order-not-found-subtitle')}
             extra={
               <Button type="primary" onClick={() => router.push('/')}>
-                กลับหน้าหลัก
+                {t('back-home')}
               </Button>
             }
           />
@@ -193,42 +196,51 @@ export default function OrderTrackingPage() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <div>
               <Title level={3} style={{ margin: 0 }}>
-                คำสั่งซื้อ #{order.orderNumber}
+                {t('order-details')} #{order.orderNumber}
               </Title>
               <Text type="secondary">
-                {new Date(order.createdAt).toLocaleString('th-TH')}
+                {new Date(order.createdAt).toLocaleString(language === 'th' ? 'th-TH' : 'en-US')}
               </Text>
             </div>
-            <Button icon={<ReloadOutlined />} onClick={fetchOrder}>
-              รีเฟรช
-            </Button>
+            <Space>
+              <Button
+                type="text"
+                icon={<GlobalOutlined />}
+                onClick={() => setLanguage(language === 'th' ? 'en' : 'th')}
+              >
+                {language === 'th' ? 'EN' : 'TH'}
+              </Button>
+              <Button icon={<ReloadOutlined />} onClick={fetchOrder}>
+                {t('refresh')}
+              </Button>
+            </Space>
           </div>
 
           <Space size="middle">
             <Tag color={getStatusColor(order.status)} style={{ fontSize: 14, padding: '4px 12px' }}>
-              สถานะ: {order.status.toUpperCase()}
+              {t('order-status')}: {t(`status-${order.status}`).toUpperCase()}
             </Tag>
             <Tag color={getPaymentStatusColor(order.paymentStatus)} style={{ fontSize: 14, padding: '4px 12px' }}>
-              ชำระเงิน: {order.paymentStatus.toUpperCase()}
+              {t('payment-status')}: {order.paymentStatus.toUpperCase()}
             </Tag>
           </Space>
 
           <Divider />
 
           <div style={{ marginBottom: 16 }}>
-            <Text strong>สาขา:</Text> {order.branchId.name}
+            <Text strong>{t('branch')}:</Text> {order.branchId.name}
             <br />
-            <Text strong>โต๊ะ:</Text> {order.tableId.tableNumber} ({order.tableId.zone})
+            <Text strong>{t('table')}:</Text> {order.tableId.tableNumber} ({order.tableId.zone})
             {order.customerName && (
               <>
                 <br />
-                <Text strong>ชื่อลูกค้า:</Text> {order.customerName}
+                <Text strong>{t('customer-name-label')}:</Text> {order.customerName}
               </>
             )}
             {order.customerPhone && (
               <>
                 <br />
-                <Text strong>เบอร์โทร:</Text> {order.customerPhone}
+                <Text strong>{t('customer-phone-label')}:</Text> {order.customerPhone}
               </>
             )}
           </div>
@@ -236,8 +248,8 @@ export default function OrderTrackingPage() {
           {isCancelled ? (
             <Result
               status="error"
-              title="คำสั่งซื้อถูกยกเลิก"
-              subTitle="คำสั่งซื้อของคุณถูกยกเลิกแล้ว กรุณาติดต่อพนักงานหากมีข้อสงสัย"
+              title={t('order-cancelled-title')}
+              subTitle={t('order-cancelled-message')}
               icon={<CloseCircleOutlined />}
             />
           ) : (
@@ -250,13 +262,13 @@ export default function OrderTrackingPage() {
           )}
         </Card>
 
-        <Card title="รายการอาหาร" style={{ marginBottom: 16 }}>
+        <Card title={t('order-items')} style={{ marginBottom: 16 }}>
           <List
             dataSource={order.items}
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
-                  title={item.name.th}
+                  title={item.name[language]}
                   description={
                     <>
                       <div>
@@ -265,7 +277,7 @@ export default function OrderTrackingPage() {
                       </div>
                       {item.specialInstructions && (
                         <Text type="secondary" style={{ fontSize: 12 }}>
-                          หมายเหตุ: {item.specialInstructions}
+                          {t('note')}: {item.specialInstructions}
                         </Text>
                       )}
                     </>
@@ -277,19 +289,19 @@ export default function OrderTrackingPage() {
 
           <Divider />
 
-          <Space direction="vertical" style={{ width: '100%' }} size="small">
+          <Space orientation="vertical" style={{ width: '100%' }} size="small">
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text>ราคารวม:</Text>
+              <Text>{t('subtotal')}:</Text>
               <Text>฿{order.subtotal.toFixed(2)}</Text>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text>ภาษี (7%):</Text>
+              <Text>{t('tax')} (7%):</Text>
               <Text>฿{order.tax.toFixed(2)}</Text>
             </div>
             <Divider style={{ margin: '8px 0' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Text strong style={{ fontSize: 18 }}>
-                ยอดรวมสุทธิ:
+                {t('grand-total')}:
               </Text>
               <Text strong style={{ fontSize: 20, color: '#ff4d4f' }}>
                 ฿{order.total.toFixed(2)}
@@ -299,11 +311,11 @@ export default function OrderTrackingPage() {
         </Card>
 
         <Card>
-          <Title level={5}>ข้อมูลติดต่อสาขา</Title>
+          <Title level={5}>{t('contact-info')}</Title>
           <Paragraph>
-            <Text strong>ที่อยู่:</Text> {order.branchId.address}
+            <Text strong>{t('address')}:</Text> {order.branchId.address}
             <br />
-            <Text strong>โทรศัพท์:</Text> {order.branchId.phone}
+            <Text strong>{t('phone')}:</Text> {order.branchId.phone}
           </Paragraph>
         </Card>
       </Content>

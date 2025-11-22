@@ -15,8 +15,9 @@ import {
   message,
   Result,
 } from 'antd';
-import { CheckCircleOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, ArrowLeftOutlined, GlobalOutlined } from '@ant-design/icons';
 import { useCart } from '@/contexts/CartContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -25,6 +26,7 @@ export default function CheckoutPage() {
   const params = useParams();
   const router = useRouter();
   const { items, total, clearCart } = useCart();
+  const { language, setLanguage, t } = useLanguage();
   const [form] = Form.useForm();
 
   const [qrCode, setQrCode] = useState<string>('');
@@ -43,10 +45,10 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (items.length === 0 && !orderSuccess) {
-      message.warning('ตะกร้าสินค้าว่างเปล่า');
+      message.warning(t('cart-empty-message'));
       router.push(`/order/${qrCode}`);
     }
-  }, [items, qrCode, orderSuccess, router]);
+  }, [items, qrCode, orderSuccess, router, t]);
 
   const subtotal = total;
   const tax = subtotal * 0.07;
@@ -81,12 +83,12 @@ export default function CheckoutPage() {
         setOrderNumber(data.data.orderNumber);
         setOrderSuccess(true);
         clearCart();
-        message.success('สั่งอาหารสำเร็จ!');
+        message.success(t('order-submit-success'));
       } else {
-        message.error(data.error || 'ไม่สามารถสั่งอาหารได้');
+        message.error(data.error || t('order-submit-error'));
       }
     } catch (error) {
-      message.error('เกิดข้อผิดพลาดในการสั่งอาหาร');
+      message.error(t('order-error'));
       console.error('Error:', error);
     } finally {
       setLoading(false);
@@ -99,8 +101,8 @@ export default function CheckoutPage() {
         <Content style={{ padding: '24px', maxWidth: 600, margin: '0 auto' }}>
           <Result
             status="success"
-            title="สั่งอาหารสำเร็จ!"
-            subTitle={`หมายเลขคำสั่งซื้อ: ${orderNumber}`}
+            title={t('order-success')}
+            subTitle={`${t('order-number')}: ${orderNumber}`}
             extra={[
               <Button
                 type="primary"
@@ -108,20 +110,20 @@ export default function CheckoutPage() {
                 key="track"
                 onClick={() => router.push(`/order/track/${orderId}`)}
               >
-                ติดตามสถานะออเดอร์
+                {t('track-order')}
               </Button>,
               <Button
                 size="large"
                 key="menu"
                 onClick={() => router.push(`/order/${qrCode}`)}
               >
-                กลับไปที่เมนู
+                {t('back-to-menu')}
               </Button>,
             ]}
           >
             <div style={{ textAlign: 'center' }}>
               <Text type="secondary">
-                กรุณารอสักครู่ พนักงานจะนำอาหารมาเสิร์ฟให้ท่าน
+                {t('order-wait-message')}
               </Text>
             </div>
           </Result>
@@ -133,24 +135,32 @@ export default function CheckoutPage() {
   return (
     <Layout style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <Content style={{ padding: '16px', maxWidth: 600, margin: '0 auto' }}>
-        <Button
-          type="text"
-          icon={<ArrowLeftOutlined />}
-          onClick={() => router.back()}
-          style={{ marginBottom: 16 }}
-        >
-          กลับ
-        </Button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <Button
+            type="text"
+            icon={<ArrowLeftOutlined />}
+            onClick={() => router.back()}
+          >
+            {t('back')}
+          </Button>
+          <Button
+            type="text"
+            icon={<GlobalOutlined />}
+            onClick={() => setLanguage(language === 'th' ? 'en' : 'th')}
+          >
+            {language === 'th' ? 'EN' : 'TH'}
+          </Button>
+        </div>
 
         <Card style={{ marginBottom: 16 }}>
-          <Title level={3}>ยืนยันคำสั่งซื้อ</Title>
+          <Title level={3}>{t('confirm-order')}</Title>
 
           <List
             dataSource={items}
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
-                  title={item.name.th}
+                  title={item.name[language]}
                   description={
                     <>
                       <div>
@@ -159,7 +169,7 @@ export default function CheckoutPage() {
                       </div>
                       {item.specialInstructions && (
                         <Text type="secondary" style={{ fontSize: 12 }}>
-                          หมายเหตุ: {item.specialInstructions}
+                          {t('note')}: {item.specialInstructions}
                         </Text>
                       )}
                     </>
@@ -171,19 +181,19 @@ export default function CheckoutPage() {
 
           <Divider />
 
-          <Space direction="vertical" style={{ width: '100%' }} size="small">
+          <Space orientation="vertical" style={{ width: '100%' }} size="small">
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text>ราคารวม:</Text>
+              <Text>{t('subtotal')}:</Text>
               <Text>฿{subtotal.toFixed(2)}</Text>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text>ภาษี (7%):</Text>
+              <Text>{t('tax')} (7%):</Text>
               <Text>฿{tax.toFixed(2)}</Text>
             </div>
             <Divider style={{ margin: '8px 0' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Text strong style={{ fontSize: 18 }}>
-                ยอดรวมสุทธิ:
+                {t('grand-total')}:
               </Text>
               <Text strong style={{ fontSize: 20, color: '#ff4d4f' }}>
                 ฿{grandTotal.toFixed(2)}
@@ -193,29 +203,29 @@ export default function CheckoutPage() {
         </Card>
 
         <Card>
-          <Title level={4}>ข้อมูลลูกค้า (ไม่บังคับ)</Title>
+          <Title level={4}>{t('customer-info')} ({t('optional')})</Title>
           <Form form={form} layout="vertical" onFinish={handleSubmit}>
             <Form.Item
               name="customerName"
-              label="ชื่อ"
+              label={t('customer-name')}
               rules={[
-                { max: 100, message: 'ชื่อต้องไม่เกิน 100 ตัวอักษร' },
+                { max: 100, message: t('customer-name-max-error') },
               ]}
             >
-              <Input placeholder="กรอกชื่อของคุณ (ไม่บังคับ)" />
+              <Input placeholder={t('customer-name-placeholder')} />
             </Form.Item>
 
             <Form.Item
               name="customerPhone"
-              label="เบอร์โทรศัพท์"
+              label={t('customer-phone')}
               rules={[
                 {
                   pattern: /^[0-9]{10}$/,
-                  message: 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก',
+                  message: t('customer-phone-error'),
                 },
               ]}
             >
-              <Input placeholder="กรอกเบอร์โทรศัพท์ (ไม่บังคับ)" maxLength={10} />
+              <Input placeholder={t('customer-phone-placeholder')} maxLength={10} />
             </Form.Item>
 
             <Form.Item>
@@ -227,7 +237,7 @@ export default function CheckoutPage() {
                 loading={loading}
                 icon={<CheckCircleOutlined />}
               >
-                ยืนยันและสั่งอาหาร
+                {t('confirm-submit')}
               </Button>
             </Form.Item>
           </Form>
