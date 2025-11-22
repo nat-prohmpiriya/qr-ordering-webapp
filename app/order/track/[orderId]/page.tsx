@@ -135,27 +135,27 @@ export default function OrderTrackingPage() {
     {
       title: t('step-pending-title'),
       icon: <ClockCircleOutlined />,
-      description: t('step-pending-desc'),
+      content: t('step-pending-desc'),
     },
     {
       title: t('step-confirmed-title'),
       icon: <CheckCircleOutlined />,
-      description: t('step-confirmed-desc'),
+      content: t('step-confirmed-desc'),
     },
     {
       title: t('step-preparing-title'),
       icon: <FireOutlined />,
-      description: t('step-preparing-desc'),
+      content: t('step-preparing-desc'),
     },
     {
       title: t('step-ready-title'),
       icon: <RocketOutlined />,
-      description: t('step-ready-desc'),
+      content: t('step-ready-desc'),
     },
     {
       title: t('step-served-title'),
       icon: <SmileOutlined />,
-      description: t('step-served-desc'),
+      content: t('step-served-desc'),
     },
   ];
 
@@ -256,7 +256,7 @@ export default function OrderTrackingPage() {
             <Steps
               current={currentStep}
               items={statusSteps}
-              direction="vertical"
+              orientation="vertical"
               style={{ marginTop: 24 }}
             />
           )}
