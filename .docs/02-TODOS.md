@@ -124,16 +124,17 @@
 - [ ] `GET /api/auth/me` - Get current user
 
 ### 5.2 Menu Management (Owner)
-- [ ] `POST /api/admin/menu` - Create menu item
-- [ ] `PUT /api/admin/menu/:id` - Update menu item
-- [ ] `DELETE /api/admin/menu/:id` - Delete menu item
+- [x] `GET /api/admin/menu` - List menu items
+- [x] `POST /api/admin/menu` - Create menu item
+- [x] `PUT /api/admin/menu/:id` - Update menu item
+- [x] `DELETE /api/admin/menu/:id` - Delete menu item
 - [ ] `POST /api/admin/categories` - Create category
 - [ ] `PUT /api/admin/categories/:id` - Update category
 
 ### 5.3 Order Management (Staff & Owner)
-- [ ] `GET /api/admin/orders` - List orders with filters
-- [ ] `GET /api/admin/orders/:id` - Get order details
-- [ ] `PATCH /api/admin/orders/:id/status` - Update order status
+- [x] `GET /api/admin/orders` - List orders with filters
+- [x] `GET /api/admin/orders/:id` - Get order details
+- [x] `PATCH /api/admin/orders/:id/status` - Update order status
 - [ ] `POST /api/admin/orders` - Create order via staff (cash)
 - [ ] `DELETE /api/admin/orders/:id` - Cancel order
 
