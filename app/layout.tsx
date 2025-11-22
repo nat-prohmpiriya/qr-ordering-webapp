@@ -30,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AntdRegistry>{children}</AntdRegistry>
+        <SessionProvider>
+          <AntdRegistry>{children}</AntdRegistry>
+        </SessionProvider>
       </body>
     </html>
   );
