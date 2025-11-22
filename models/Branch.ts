@@ -56,6 +56,12 @@ const BranchSchema = new Schema<IBranch>(
       default: true,
       index: true,
     },
+    menuItems: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'MenuItem',
+      },
+    ],
   },
   {
     timestamps: true,

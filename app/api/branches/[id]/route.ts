@@ -2,32 +2,42 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Branch from '@/models/Branch';
 import type { ApiResponse } from '@/types';
+import mongoose from 'mongoose';
 
 /**
- * GET /api/branches/:slug
- * Get a single branch by slug
+ * GET /api/branches/:id
+ * Get a single branch by ID or slug
  * Public endpoint - no authentication required
  */
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { slug } = await params;
+    await connectDB();
 
-    if (!slug) {
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
+
+    if (!id) {
       const response: ApiResponse = {
         success: false,
-        error: 'Branch slug is required',
+        error: 'Branch identifier is required',
       };
       return NextResponse.json(response, { status: 400 });
     }
 
-    await connectDB();
+    let branch;
 
-    const branch = await Branch.findOne({ slug, isActive: true })
-      .select('-__v')
-      .lean();
+    // Check if id is a valid MongoDB ObjectId
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      branch = await Branch.findById(id).select('-__v').lean();
+    }
+
+    // If not found by ID or not a valid ObjectId, try to find by slug
+    if (!branch) {
+      branch = await Branch.findOne({ slug: id }).select('-__v').lean();
+    }
 
     if (!branch) {
       const response: ApiResponse = {

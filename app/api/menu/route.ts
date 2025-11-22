@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import MenuItem from '@/models/MenuItem';
-import BranchMenuItem from '@/models/BranchMenuItem';
-import Category from '@/models/Category';
+import Branch from '@/models/Branch';
 import type { ApiResponse } from '@/types';
 
 /**
@@ -37,18 +36,24 @@ export async function GET(request: Request) {
     // If branchId is provided, filter by branch availability
     let menuItems;
     if (branchId) {
-      // Get menu items available at this branch
-      const branchMenuItems = await BranchMenuItem.find({
-        branchId,
-        isAvailable: true,
-      })
-        .select('menuItemId')
-        .lean();
+      // Get branch and its menu items
+      const branch = await Branch.findById(branchId).select('menuItems').lean();
 
-      const availableMenuItemIds = branchMenuItems.map((bm) => bm.menuItemId);
+      if (!branch) {
+        const response: ApiResponse = {
+          success: false,
+          error: 'Branch not found',
+        };
+        return NextResponse.json(response, { status: 404 });
+      }
 
-      // Add to query
-      query._id = { $in: availableMenuItemIds };
+      // Filter menu items by branch's menuItems array
+      if (branch.menuItems && branch.menuItems.length > 0) {
+        query._id = { $in: branch.menuItems };
+      } else {
+        // If branch has no menu items assigned, return empty array
+        query._id = { $in: [] };
+      }
 
       menuItems = await MenuItem.find(query)
         .populate('categoryId', 'name slug')

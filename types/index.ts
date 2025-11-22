@@ -39,6 +39,7 @@ export interface IBranch {
     taxRate: number;
   };
   isActive: boolean;
+  menuItems?: Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }

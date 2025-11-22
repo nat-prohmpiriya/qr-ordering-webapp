@@ -28,7 +28,7 @@
 - [ ] Get Stripe API keys (publishable & secret)
 - [x] Setup NextAuth.js v5 configuration
 - [x] Generate JWT secret for NextAuth
-- [ ] Install and configure Socket.io
+- [x] Install and configure Socket.io
 
 ### 1.4 Development Tools
 - [ ] Install and configure Sentry for error tracking
@@ -93,7 +93,7 @@
 
 ### 4.1 Branch Endpoints
 - [x] `GET /api/branches` - List all active branches
-- [x] `GET /api/branches/:slug` - Get branch by slug
+- [x] `GET /api/branches/:id` - Get branch by ID or slug
 
 ### 4.2 Menu & Category Endpoints
 - [x] `GET /api/menu` - Get menu items with branch filtering
@@ -139,56 +139,61 @@
 - [ ] `DELETE /api/admin/orders/:id` - Cancel order
 
 ### 5.4 Table Management (Owner)
-- [ ] `GET /api/admin/tables` - List tables
-- [ ] `POST /api/admin/tables` - Create table
-- [ ] `PUT /api/admin/tables/:id` - Update table
-- [ ] `DELETE /api/admin/tables/:id` - Delete table
-- [ ] `GET /api/admin/tables/:id/qr` - Generate QR code
+- [x] `GET /api/admin/tables` - List tables
+- [x] `POST /api/admin/tables` - Create table
+- [x] `PUT /api/admin/tables/:id` - Update table
+- [x] `DELETE /api/admin/tables/:id` - Delete table
+- [x] `GET /api/admin/tables/:id/qr` - Generate QR code (implemented in UI)
 
 ### 5.5 User Management (Owner)
-- [ ] `GET /api/admin/users` - List users with branch filter
-- [ ] `POST /api/admin/users` - Create user
-- [ ] `PUT /api/admin/users/:id` - Update user
-- [ ] `DELETE /api/admin/users/:id` - Delete user
+- [x] `GET /api/admin/users` - List users with branch filter
+- [x] `POST /api/admin/users` - Create user
+- [x] `PUT /api/admin/users/:id` - Update user
+- [x] `DELETE /api/admin/users/:id` - Delete user
 
 ### 5.6 Branch Management (Owner)
-- [ ] `GET /api/admin/branches` - List branches
-- [ ] `GET /api/admin/branches/:id` - Get branch details
-- [ ] `POST /api/admin/branches` - Create branch
-- [ ] `PUT /api/admin/branches/:id` - Update branch
-- [ ] `DELETE /api/admin/branches/:id` - Delete branch
+- [x] `GET /api/admin/branches` - List branches
+- [x] `GET /api/admin/branches/:id` - Get branch details
+- [x] `POST /api/admin/branches` - Create branch
+- [x] `PUT /api/admin/branches/:id` - Update branch
+- [x] `DELETE /api/admin/branches/:id` - Delete branch
 
 ### 5.7 Branch Menu Management (Owner)
-- [ ] `GET /api/admin/branches/:branchId/menu` - Get branch menu availability
-- [ ] `PATCH /api/admin/branches/:branchId/menu/:menuItemId` - Toggle item availability
-- [ ] `POST /api/admin/branches/:branchId/menu/bulk-update` - Bulk update availability
+- [x] `PUT /api/admin/branches/:branchId/menu` - Update branch menu items (bulk)
+- [x] Branch menu selection implemented via Transfer UI component
+- [ ] `PATCH /api/admin/branches/:branchId/menu/:menuItemId` - Toggle item availability (optional)
 
 ### 5.8 Reports (Owner)
-- [ ] `GET /api/admin/reports/sales` - Sales report with branch filter
-- [ ] `GET /api/admin/reports/popular-items` - Popular items report
-- [ ] `GET /api/admin/reports/orders` - Orders report
-- [ ] `GET /api/admin/reports/branches` - Branch comparison report
+- [x] `GET /api/admin/reports` - Comprehensive reports with analytics
+  - [x] Sales summary (total orders, revenue, avg order value)
+  - [x] Orders by status breakdown
+  - [x] Orders by payment status
+  - [x] Daily revenue report
+  - [x] Top selling items
+  - [x] Branch filtering support
+  - [x] Date range filtering support
 
 ---
 
-## Phase 6: Real-time Features (Socket.io)
+## Phase 6: Real-time Features (Socket.io) ✅
 
 ### 6.1 Socket.io Server Setup
-- [ ] Configure Socket.io server (`/lib/socket.ts`)
-- [ ] Implement connection handling
-- [ ] Create room management (staff room, order rooms)
+- [x] Configure Socket.io server (custom `server.js` with Next.js)
+- [x] Implement connection handling
+- [x] Create room management (`branch:${branchId}`, `order:${orderId}`)
+- [x] Created global.io instance for API routes
 
 ### 6.2 Socket Events
-- [ ] Implement `join-staff-room` event handler
-- [ ] Implement `join-order-room` event handler
-- [ ] Emit `new-order` event to staff
-- [ ] Emit `order-status-updated` event to customers
-- [ ] Emit `order-cancelled` event
+- [x] Implement `join-branch` event handler
+- [x] Implement `join-order` event handler
+- [x] Emit `new-order` event to branch staff
+- [x] Emit `order-status-update` event to customers
+- [x] Socket.io helper functions in `/lib/socket.ts`
 
 ### 6.3 Client Integration
 - [ ] Create Socket.io client hook (`useSocket`)
-- [ ] Integrate Socket.io with order status updates
-- [ ] Add real-time notifications to admin dashboard
+- [ ] Integrate Socket.io with order status updates on client
+- [ ] Add real-time notifications to admin dashboard UI
 
 ---
 
@@ -228,7 +233,7 @@
 
 ---
 
-## Phase 8: Frontend - Admin Dashboard
+## Phase 8: Frontend - Admin Dashboard ✅
 
 ### 8.1 Auth Pages
 - [x] Create login page (`/app/login/page.tsx`)
@@ -237,66 +242,78 @@
 - [x] Implement logout functionality
 
 ### 8.2 Dashboard Layout
-- [ ] Create admin layout with sidebar navigation
-- [ ] Add role-based menu (staff vs owner)
-- [x] Create dashboard overview page (basic version in `/app/dashboard/page.tsx`)
-- [ ] Show key metrics (today's orders, sales, etc.)
+- [x] Create admin layout with sidebar navigation (`/components/AdminLayout.tsx`)
+- [x] Add role-based menu (staff vs owner)
+- [x] Create dashboard overview page (`/app/dashboard/page.tsx`)
+- [x] Show key metrics with statistics cards
 
 ### 8.3 Order Management
-- [ ] Create orders list page (`/app/admin/orders/page.tsx`)
-- [ ] Add filters (status, date, branch)
-- [ ] Implement order status update
-- [ ] Show real-time new orders via Socket.io
-- [ ] Add order details modal
-- [ ] Implement order cancellation
+- [x] Create orders list page (`/app/admin/orders/page.tsx`)
+- [x] Add filters (status, branch)
+- [x] Implement order status update with dropdown
+- [x] Show order details in expandable rows
+- [x] Real-time Socket.io events configured (client integration pending)
 
 ### 8.4 Menu Management (Owner)
-- [ ] Create menu items list page
-- [ ] Create add/edit menu item form
-- [ ] Implement image upload for menu items
-- [ ] Create categories management page
-- [ ] Add category reordering (displayOrder)
+- [x] Create menu items list page (`/app/admin/menu/page.tsx`)
+- [x] Create add/edit menu item form with modal
+- [x] Category dropdown selection
+- [x] Full CRUD operations for menu items
+- [ ] Implement image upload for menu items (optional)
+- [x] Categories fetched from API
 
 ### 8.5 Table Management (Owner)
-- [ ] Create tables list page
-- [ ] Create add/edit table form
-- [ ] Generate and display QR codes
-- [ ] Add QR code download/print functionality
+- [x] Create tables list page (`/app/admin/tables/page.tsx`)
+- [x] Create add/edit table form with modal
+- [x] Generate and display QR codes in modal
+- [x] Add QR code download functionality
+- [x] Branch-specific table management
 
 ### 8.6 User Management (Owner)
-- [ ] Create users list page
-- [ ] Create add/edit user form
-- [ ] Assign users to branches
-- [ ] Implement user activation/deactivation
+- [x] Create users list page (`/app/admin/users/page.tsx`)
+- [x] Create add/edit user form with modal
+- [x] Assign users to branches via dropdown
+- [x] Implement user activation/deactivation with switch
+- [x] Role selection (Owner/Staff)
 
 ### 8.7 Branch Management (Owner)
-- [ ] Create branches list page
-- [ ] Create add/edit branch form
-- [ ] Configure branch settings (opening hours, tax rate)
-- [ ] Manage branch menu availability
+- [x] Create branches list page (`/app/admin/branches/page.tsx`)
+- [x] Create add/edit branch form with modal
+- [x] Manage branch menu availability (`/app/admin/branch/[id]/page.tsx`)
+- [x] Branch-specific table management in detail page
+- [x] Transfer component for menu selection
+- [x] Full CRUD operations for branches
+- [ ] Configure opening hours UI (data structure exists)
+- [ ] Configure tax rate UI (data structure exists)
 
 ### 8.8 Reports (Owner)
-- [ ] Create sales report page with date picker
-- [ ] Create popular items report with charts
-- [ ] Create branch comparison report
-- [ ] Add export to CSV functionality
-- [ ] Implement date range filtering
+- [x] Create reports page with analytics (`/app/admin/reports/page.tsx`)
+- [x] Statistics cards (total orders, revenue, avg order value)
+- [x] Orders by status breakdown
+- [x] Orders by payment status breakdown
+- [x] Daily revenue table
+- [x] Top selling items table
+- [x] Branch filter dropdown
+- [x] Date range picker with filtering
+- [ ] Add export to CSV functionality (optional)
+- [ ] Add charts visualization (optional)
 
 ---
 
-## Phase 9: QR Code Generation
+## Phase 9: QR Code Generation ✅
 
 ### 9.1 QR Code Utilities
-- [ ] Install `qrcode.react` library
-- [ ] Create QR code generator utility
-- [ ] Generate unique QR identifiers per table
-- [ ] Create QR code display component
+- [x] Install `qrcode.react` library
+- [x] QR codes generated automatically on table creation
+- [x] Generate unique QR identifiers per table (nanoid)
+- [x] QR code display component in tables management
 
 ### 9.2 Printable QR Codes
-- [ ] Create printable QR code template
-- [ ] Add table number and branch info
-- [ ] Implement print styles
-- [ ] Add download as PNG/PDF
+- [x] Create QR code modal with preview
+- [x] Add table number and branch info to QR display
+- [x] Implement download as PNG functionality
+- [ ] Add print styles for direct printing (optional)
+- [ ] Add download as PDF (optional)
 
 ---
 
@@ -443,20 +460,24 @@
 
 ---
 
-## Phase 16: Seed Data & Demo Setup
+## Phase 16: Seed Data & Demo Setup ✅
 
 ### 16.1 Create Seed Scripts
-- [ ] Create seed script for branches
-- [ ] Create seed script for categories
-- [ ] Create seed script for menu items
-- [ ] Create seed script for tables
-- [ ] Create seed script for owner/staff users
+- [x] Create comprehensive seed script (`scripts/seed.ts`)
+- [x] Seed branches (2 branches)
+- [x] Seed categories (5 categories)
+- [x] Seed menu items (15 items)
+- [x] Seed tables (18 tables with QR codes)
+- [x] Seed owner/staff users (3 users)
 
 ### 16.2 Demo Data
-- [ ] Seed realistic menu data (Thai restaurant)
-- [ ] Generate QR codes for demo tables
-- [ ] Create demo orders for testing
-- [ ] Setup demo admin accounts
+- [x] Realistic Thai restaurant menu data
+- [x] QR codes auto-generated for all tables
+- [x] Demo admin accounts:
+  - Owner: owner@restaurant.com / password123
+  - Staff 1: staff1@restaurant.com / password123
+  - Staff 2: staff2@restaurant.com / password123
+- [ ] Create demo orders for testing (optional)
 
 ---
 

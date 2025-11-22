@@ -19,8 +19,10 @@ import {
   EditOutlined,
   DeleteOutlined,
   ReloadOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import AdminLayout from '@/components/AdminLayout';
+import { useRouter } from 'next/navigation';
 import type { ColumnsType } from 'antd/es/table';
 
 const { Title } = Typography;
@@ -38,6 +40,7 @@ interface Branch {
 }
 
 export default function BranchesPage() {
+  const router = useRouter();
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -196,9 +199,16 @@ export default function BranchesPage() {
     {
       title: 'Actions',
       key: 'actions',
-      width: 180,
+      width: 250,
       render: (_, record: Branch) => (
         <Space>
+          <Button
+            type="primary"
+            icon={<SettingOutlined />}
+            onClick={() => router.push(`/admin/branch/${record._id}`)}
+          >
+            Manage
+          </Button>
           <Button
             type="link"
             icon={<EditOutlined />}
