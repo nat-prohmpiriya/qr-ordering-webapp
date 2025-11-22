@@ -416,9 +416,11 @@ export default function BranchDetailPage() {
             onChange={setSelectedMenuKeys}
             render={(item) => item.title}
             showSearch
-            listStyle={{
-              width: '45%',
-              height: 500,
+            styles={{
+              section: {
+                width: '45%',
+                height: 500,
+              },
             }}
             titles={['Available Menu', 'Branch Menu']}
           />
@@ -479,7 +481,7 @@ export default function BranchDetailPage() {
 
       <Card style={{ marginBottom: 16 }}>
         <Title level={2}>{branch.name}</Title>
-        <Space direction="vertical">
+        <Space orientation="vertical">
           <Text><strong>Slug:</strong> {branch.slug}</Text>
           <Text><strong>Address:</strong> {branch.address}</Text>
           <Text><strong>Phone:</strong> {branch.phone}</Text>

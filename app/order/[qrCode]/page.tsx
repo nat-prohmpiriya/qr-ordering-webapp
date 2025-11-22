@@ -105,7 +105,7 @@ export default function OrderPage() {
       const response = await fetch(`/api/tables/${qrCode}`);
       const data = await response.json();
 
-      if (data.success) {
+      if (data.success && data.data) {
         setTableInfo({
           tableNumber: data.data.table.tableNumber,
           zone: data.data.table.zone,
@@ -214,12 +214,12 @@ export default function OrderPage() {
           zIndex: 1000,
         }}
       >
-        <div>
-          <Title level={4} style={{ margin: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <Title level={4} style={{ margin: 0, lineHeight: 1.2 }}>
             {tableInfo?.branch.name}
           </Title>
-          <Text type="secondary">
-            โต๊ะ {tableInfo?.tableNumber} ({tableInfo?.zone})
+          <Text type="secondary" style={{ fontSize: 13 }}>
+            โต๊ะ {tableInfo?.tableNumber}{tableInfo?.zone ? ` (${tableInfo.zone})` : ''}
           </Text>
         </div>
         <Badge count={itemCount} showZero>
@@ -413,7 +413,8 @@ export default function OrderPage() {
         placement="right"
         onClose={() => setCartDrawerVisible(false)}
         open={cartDrawerVisible}
-        width={400}
+        size="default"
+        styles={{ body: { width: 400 } }}
         footer={
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>

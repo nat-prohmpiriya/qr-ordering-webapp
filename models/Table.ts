@@ -14,6 +14,10 @@ const TableSchema = new Schema<ITable>(
       required: [true, 'Table number is required'],
       trim: true,
     },
+    zone: {
+      type: String,
+      trim: true,
+    },
     qrCode: {
       type: String,
       required: [true, 'QR code is required'],
