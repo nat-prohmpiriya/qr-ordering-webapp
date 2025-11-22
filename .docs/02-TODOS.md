@@ -89,19 +89,19 @@
 
 ---
 
-## Phase 4: Public API Endpoints (Guest)
+## Phase 4: Public API Endpoints (Guest) ✅
 
 ### 4.1 Branch Endpoints
-- [ ] `GET /api/branches` - List all active branches
-- [ ] `GET /api/branches/:slug` - Get branch by slug
+- [x] `GET /api/branches` - List all active branches
+- [x] `GET /api/branches/:slug` - Get branch by slug
 
 ### 4.2 Menu & Category Endpoints
-- [ ] `GET /api/menu` - Get menu items with branch filtering
-- [ ] `GET /api/menu/:id` - Get single menu item
-- [ ] `GET /api/categories` - Get all categories
+- [x] `GET /api/menu` - Get menu items with branch filtering
+- [x] `GET /api/menu/:id` - Get single menu item
+- [x] `GET /api/categories` - Get all categories
 
 ### 4.3 Table Endpoints
-- [ ] `GET /api/tables/:qrCode` - Get table info by QR code
+- [x] `GET /api/tables/:qrCode` - Get table info by QR code
 
 ### 4.4 Order Endpoints (Guest)
 - [ ] `POST /api/orders` - Create new order (guest checkout)
